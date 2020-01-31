@@ -1,0 +1,46 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '2.1.5.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+
+}
+
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+    maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+
+    compile group: 'org.hibernate', name: 'hibernate-core', version: '5.4.3.Final'
+    compile group: 'com.h2database', name: 'h2', version: '1.4.199'
+    compile 'org.springframework.boot:spring-boot-starter-web'
+    compile group: 'com.github.detro', name: 'ghostdriver', version: '2.1.0'
+    compile group: 'commons-io', name: 'commons-io', version: '2.6'
+    compile 'net.anthavio:phanbedder-2.1.1:1.0.0'
+    compile group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '3.141.59'
+
+    implementation 'org.springframework.boot:spring-boot-starter-jersey'
+    implementation 'io.swagger:swagger-jersey2-jaxrs'
+    implementation 'org.glassfish.jersey.media:jersey-media-multipart'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.1.7.RELEASE'
+}
+
+dependencyManagement {
+    dependencies {
+        dependency 'io.swagger:swagger-jersey2-jaxrs:1.5.3'
+        imports {
+            mavenBom 'org.springframework.boot:spring-boot-starter-parent:2.1.8.RELEASE'
+        }
+    }
+}
+
+
+
