@@ -1,0 +1,25 @@
+{
+  "requestId": 513,
+  "results": {
+    "http://google.com": {
+      "downloadUrl": "http://localhost:9443/app/api/1.0/download/<requestId>/<screenshotId>",
+      "screenshotId": 321
+    },
+    "http://twitter.com": {
+      "downloadUrl": "http://localhost:9443/app/api/1.0/download/<requestId>/<screenshotId>",
+      "screenshotId": 322
+    },
+    "xyz": null,
+    "facebook.com": null
+  },
+  "errors": [
+    {
+      "code": 1002,
+      "detail": "xyz not found"
+    },
+    {
+      "code": 1006,
+      "detail": "facebook.com timed out"
+    }
+  ]
+}
