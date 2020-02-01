@@ -2,6 +2,7 @@ package com.detectify.screenshot.controller;
 
 import com.detectify.screenshot.DTO.CaptureScreenshotDTO;
 import com.detectify.screenshot.DTO.ScreenshotDTO;
+import com.detectify.screenshot.exception.EmptyUrlListException;
 import com.detectify.screenshot.model.Screenshot;
 import com.detectify.screenshot.model.ScreenshotRequest;
 import com.detectify.screenshot.service.ScreenshotRequestService;
@@ -43,16 +44,20 @@ public class ScreenshotController {
 
         Map<String, ScreenshotDTO> screenshotDTOS = new HashMap<>();
 
-        ScreenshotRequest request = new ScreenshotRequest();
-        requestService.add(request);
+        if (urlList.size() == 0) {
+            throw new EmptyUrlListException();
+        } else {
+            ScreenshotRequest request = new ScreenshotRequest();
+            requestService.add(request);
 
-        List<Screenshot> screenshots = screenshotService.createScreenshots(request, urlList);
+            List<Screenshot> screenshots = screenshotService.createScreenshots(request, urlList);
 
-        screenshotService.addScreenshots(screenshots);
+            screenshotService.addScreenshots(screenshots);
 
-        for (Screenshot screenshot : screenshots) {
-            screenshotDTOS.put(screenshot.getPageUrl(), new ScreenshotDTO(screenshot));
+            for (Screenshot screenshot : screenshots) {
+                screenshotDTOS.put(screenshot.getPageUrl(), new ScreenshotDTO(screenshot));
+            }
+            return new CaptureScreenshotDTO(request, screenshotDTOS);
         }
-        return new CaptureScreenshotDTO(request, screenshotDTOS);
     }
 }

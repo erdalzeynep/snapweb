@@ -12,7 +12,7 @@ public class CaptureScreenshotDTO {
     public CaptureScreenshotDTO() {
     }
 
-    public CaptureScreenshotDTO(ScreenshotRequest req, Map<String,ScreenshotDTO> results) {
+    public CaptureScreenshotDTO(ScreenshotRequest req, Map<String, ScreenshotDTO> results) {
         this.requestId = req.getId();
         this.results = results;
     }

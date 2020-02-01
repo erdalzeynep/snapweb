@@ -6,6 +6,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation.Builder;
 import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,6 +40,15 @@ public class ScreenshotControllerTest extends TestBase {
         assertNotNull(response.getResults().get(webPage2).getScreenshotId());
         assertEquals(createDownloadUrl(webPage1, response), response.getResults().get(webPage1).getDownloadUrl());
         assertEquals(createDownloadUrl(webPage2, response), response.getResults().get(webPage2).getDownloadUrl());
+    }
+
+    @Test
+    public void shouldNotAllowCallTheServiceWithEmptyUrlList(){
+
+        List<String> urlList = new ArrayList<>();
+        Builder screenshotController = getBuilder("/captureScreenshots");
+        Response response = screenshotController.post(Entity.json(urlList));
+        assertEquals(400, response.getStatus());
     }
 
     private String createDownloadUrl(String webPage, CaptureScreenshotDTO response) {
