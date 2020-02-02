@@ -1,4 +1,5 @@
 import com.detectify.screenshot.DTO.CaptureScreenshotDTO;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -51,7 +52,26 @@ public class ScreenshotControllerTest extends TestBase {
         assertEquals(400, response.getStatus());
     }
 
+    @Test
+    public void shouldNotAppendPreviousScreenshotRequestInTheResults(){
+
+        List<String> urlList1 = new ArrayList<>();
+        String webPage1 = "https://www.google.com";
+        urlList1.add(webPage1);
+        Builder screenshotController = getBuilder("/captureScreenshots");
+        CaptureScreenshotDTO response1 = screenshotController.post(Entity.json(urlList1), new GenericType<CaptureScreenshotDTO>() {
+        });
+
+        List<String> urlList2 = new ArrayList<>();
+        String webPage2 = "https://www.facebook.com";
+        urlList2.add(webPage2);
+        CaptureScreenshotDTO response2 = screenshotController.post(Entity.json(urlList2), new GenericType<CaptureScreenshotDTO>() {
+        });
+
+        assertEquals(1, response2.getResults().size());
+    }
+
     private String createDownloadUrl(String webPage, CaptureScreenshotDTO response) {
-        return "http://localhost:9443/app/api/1.0/download/"+response.getRequestId()+"/"+response.getResults().get(webPage).getScreenshotId();
+        return "http://localhost:9443/app/api/1.0/download/" + response.getRequestId() + "/" + response.getResults().get(webPage).getScreenshotId();
     }
 }

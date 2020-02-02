@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,8 +25,6 @@ public class ScreenshotService {
     @Value(value = "${screenshot-output-path}")
     private String screenshotOutputPath;
 
-    private List<Screenshot> screenshotList = new ArrayList<>();
-
     @Autowired
     public ScreenshotService(PhantomJSDriver webDriver, ScreenshotRepository repository) {
         this.webDriver = webDriver;
@@ -37,7 +36,7 @@ public class ScreenshotService {
     }
 
     public List<Screenshot> createScreenshots(ScreenshotRequest request, List<String> urlList) throws IOException {
-
+        List<Screenshot> screenshotList = new ArrayList<>();
         for (String url : urlList) {
             String path = savePicture(url);
             screenshotList.add(new Screenshot(url, path, request));
@@ -54,6 +53,8 @@ public class ScreenshotService {
         File destFile = new File(screenshotOutputPath);
         FileUtils.moveFileToDirectory(srcFile, destFile, false);
 
-        return srcFile.getPath();
+        webDriver.manage().deleteAllCookies();
+
+        return Paths.get(destFile.getPath(), srcFile.getName()).toString();
     }
 }

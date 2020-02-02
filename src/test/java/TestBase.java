@@ -2,8 +2,6 @@ import com.detectify.screenshot.Application;
 import com.detectify.screenshot.repository.ScreenshotRepository;
 import com.detectify.screenshot.repository.ScreenshotRequestRepository;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
-import org.junit.After;
-import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
