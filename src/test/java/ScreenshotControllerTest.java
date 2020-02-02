@@ -102,8 +102,16 @@ public class ScreenshotControllerTest extends TestBase {
         Long requestId = responseOfCaptureRequest.getRequestId();
         Long screenshotId = responseOfCaptureRequest.getResults().get(webPage).getScreenshotId();
 
-        Response response = getBuilder("/download/{requestId}/{screenshotId}", requestId+1, screenshotId).get();
-        assertEquals(404, response.getStatus());
+        Long unknownRequestId = -999L;
+        Long unknownScreenshotId = -999L;
+
+        Response response1 = getBuilder("/download/{requestId}/{screenshotId}", unknownRequestId, screenshotId).get();
+        Response response2 = getBuilder("/download/{requestId}/{screenshotId}", requestId, unknownScreenshotId).get();
+        Response response3 = getBuilder("/download/{requestId}/{screenshotId}", unknownRequestId, unknownScreenshotId).get();
+
+        assertEquals(404, response1.getStatus());
+        assertEquals(404, response2.getStatus());
+        assertEquals(404, response3.getStatus());
     }
 
     private String createDownloadUrl(String webPage, CaptureScreenshotDTO response) {

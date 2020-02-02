@@ -3,11 +3,9 @@ package com.detectify.screenshot.service;
 import com.detectify.screenshot.model.Screenshot;
 import com.detectify.screenshot.model.ScreenshotRequest;
 import com.detectify.screenshot.repository.ScreenshotRepository;
-import jdk.nashorn.internal.objects.AccessorPropertyDescriptor;
 import net.anthavio.phanbedder.Phanbedder;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.OutputType;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriverService;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -25,7 +23,7 @@ import java.util.List;
 @Component
 public class ScreenshotService {
 
-    private final ScreenshotRepository repository;
+    private final ScreenshotRepository screenshotRepository;
 
     private PhantomJSDriver webDriver;
 
@@ -35,12 +33,12 @@ public class ScreenshotService {
     private String screenshotOutputPath;
 
     @Autowired
-    public ScreenshotService(ScreenshotRepository repository) {
-        this.repository = repository;
+    public ScreenshotService(ScreenshotRepository screenshotRepository) {
+        this.screenshotRepository = screenshotRepository;
     }
 
     public List<Screenshot> addScreenshots(List<Screenshot> screenshots) {
-        return repository.saveAll(screenshots);
+        return screenshotRepository.saveAll(screenshots);
     }
 
     public List<Screenshot> createScreenshots(ScreenshotRequest request, List<String> urlList) throws IOException {
@@ -75,15 +73,7 @@ public class ScreenshotService {
     }
 
     public Screenshot getScreenshotByScreenshotIdAndRequestId(Long screenshotId, Long givenRequestId) {
-        if (repository.existsById(screenshotId)) {
-            Screenshot persistedScreenshot = repository.getOne(screenshotId);
-            boolean isScreenshotIdMatchesRequestId = persistedScreenshot.getScreenshotRequest().getId().equals(givenRequestId);
-            if (isScreenshotIdMatchesRequestId)
-                return persistedScreenshot;
-            else
-                return null;
-        } else
-            return null;
+        return screenshotRepository.findByIdAndScreenshotRequestId(screenshotId, givenRequestId);
     }
 
     @PostConstruct

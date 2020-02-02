@@ -11,21 +11,21 @@ public abstract class AbstractEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    protected Long mId;
+    protected Long id;
 
     public Long getId() {
-        return mId;
+        return id;
     }
 
-    public void setId(Long mId) {
-        this.mId = mId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((mId == null) ? 0 : mId.hashCode());
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
         return result;
     }
 
@@ -38,10 +38,10 @@ public abstract class AbstractEntity {
         if (getClass() != obj.getClass())
             return false;
         AbstractEntity other = (AbstractEntity) obj;
-        if (mId == null) {
-            if (other.mId != null)
+        if (id == null) {
+            if (other.id != null)
                 return false;
-        } else if (!mId.equals(other.mId))
+        } else if (!id.equals(other.id))
             return false;
         return true;
     }
