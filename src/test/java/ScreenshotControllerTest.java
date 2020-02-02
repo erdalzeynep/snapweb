@@ -44,7 +44,7 @@ public class ScreenshotControllerTest extends TestBase {
     }
 
     @Test
-    public void shouldNotAllowCallTheServiceWithEmptyUrlList(){
+    public void shouldNotAllowCallTheServiceWithEmptyUrlList() {
 
         List<String> urlList = new ArrayList<>();
         Builder screenshotController = getBuilder("/captureScreenshots");
@@ -53,7 +53,7 @@ public class ScreenshotControllerTest extends TestBase {
     }
 
     @Test
-    public void shouldNotAppendPreviousScreenshotRequestInTheResults(){
+    public void shouldNotAppendPreviousScreenshotRequestInTheResults() {
 
         List<String> urlList1 = new ArrayList<>();
         String webPage1 = "https://www.google.com";
@@ -71,7 +71,42 @@ public class ScreenshotControllerTest extends TestBase {
         assertEquals(1, response2.getResults().size());
     }
 
+    @Test
+    public void shouldReturn200ForDownloadRequestWithCorrectRequestIdAndScreenshotId() {
+        List<String> urlList = new ArrayList<>();
+        String webPage = "https://www.google.com";
+        urlList.add(webPage);
+        Builder screenshotController = getBuilder("/captureScreenshots");
+        CaptureScreenshotDTO responseOfCaptureRequest = screenshotController.post(Entity.json(urlList), new GenericType<CaptureScreenshotDTO>() {
+        });
+
+        Long requestId = responseOfCaptureRequest.getRequestId();
+        Long screenshotId = responseOfCaptureRequest.getResults().get(webPage).getScreenshotId();
+
+        Response response = getBuilder("/download/{requestId}/{screenshotId}", requestId, screenshotId).get();
+
+        assertEquals(200, response.getStatus());
+
+    }
+
+    @Test
+    public void shouldGiveAnErrorForDownloadRequestWithUnmatchedRequestIdAndScreenshotId() {
+
+        List<String> urlList = new ArrayList<>();
+        String webPage = "https://www.google.com";
+        urlList.add(webPage);
+        Builder screenshotController = getBuilder("/captureScreenshots");
+        CaptureScreenshotDTO responseOfCaptureRequest = screenshotController.post(Entity.json(urlList), new GenericType<CaptureScreenshotDTO>() {
+        });
+
+        Long requestId = responseOfCaptureRequest.getRequestId();
+        Long screenshotId = responseOfCaptureRequest.getResults().get(webPage).getScreenshotId();
+
+        Response response = getBuilder("/download/{requestId}/{screenshotId}", requestId+1, screenshotId).get();
+        assertEquals(404, response.getStatus());
+    }
+
     private String createDownloadUrl(String webPage, CaptureScreenshotDTO response) {
-        return "http://localhost:9443/app/api/1.0/download/" + response.getRequestId() + "/" + response.getResults().get(webPage).getScreenshotId();
+        return "http://localhost:9443/api/1.0/download/" + response.getRequestId() + "/" + response.getResults().get(webPage).getScreenshotId();
     }
 }

@@ -2,9 +2,11 @@ import com.detectify.screenshot.Application;
 import com.detectify.screenshot.repository.ScreenshotRepository;
 import com.detectify.screenshot.repository.ScreenshotRequestRepository;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
+import org.junit.Before;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 
 import javax.annotation.PostConstruct;
 import javax.ws.rs.client.Client;
@@ -15,16 +17,24 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = {
-        Application.class})
+@SpringBootTest(
+        webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT,
+        classes = {Application.class})
+@DirtiesContext
 public class TestBase {
-
 
     @Autowired
     ScreenshotRepository screenshotRepository;
 
     @Autowired
     ScreenshotRequestRepository screenshotRequestRepository;
+
+
+    @Before
+    public void cleanDb(){
+        screenshotRepository.deleteAll();
+        screenshotRequestRepository.deleteAll();
+    }
 
     private String mServerUri;
 
@@ -46,7 +56,10 @@ public class TestBase {
         WebTarget webTarget = mClient.target(uri);
         webTarget = webTarget.register(MultiPartFeature.class);
 
-        return webTarget.request(MediaType.APPLICATION_JSON_TYPE, MediaType.APPLICATION_OCTET_STREAM_TYPE);
+        return webTarget.request(
+                MediaType.APPLICATION_JSON_TYPE,
+                new MediaType("image", "png")
+        );
     }
 
     protected Client createClient() {

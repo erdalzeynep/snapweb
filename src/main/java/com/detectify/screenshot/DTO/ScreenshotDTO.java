@@ -12,7 +12,7 @@ public class ScreenshotDTO {
 
     public ScreenshotDTO(Screenshot screenshot) {
 
-        this.downloadUrl = "http://localhost:9443/app/api/1.0/download/"+screenshot.getScreenshotRequest().getId()+"/"+screenshot.getId();
+        this.downloadUrl = "http://localhost:9443/api/1.0/download/"+screenshot.getScreenshotRequest().getId()+"/"+screenshot.getId();
         this.screenshotId = screenshot.getId();
     }
 

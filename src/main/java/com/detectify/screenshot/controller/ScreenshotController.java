@@ -3,6 +3,7 @@ package com.detectify.screenshot.controller;
 import com.detectify.screenshot.DTO.CaptureScreenshotDTO;
 import com.detectify.screenshot.DTO.ScreenshotDTO;
 import com.detectify.screenshot.exception.EmptyUrlListException;
+import com.detectify.screenshot.exception.NotFoundException;
 import com.detectify.screenshot.model.Screenshot;
 import com.detectify.screenshot.model.ScreenshotRequest;
 import com.detectify.screenshot.service.ScreenshotRequestService;
@@ -13,10 +14,10 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -24,7 +25,6 @@ import java.util.Map;
 
 @Component
 @Path("/api/1.0")
-
 public class ScreenshotController {
 
     private final ScreenshotRequestService requestService;
@@ -58,6 +58,22 @@ public class ScreenshotController {
                 screenshotDTOS.put(screenshot.getPageUrl(), new ScreenshotDTO(screenshot));
             }
             return new CaptureScreenshotDTO(request, screenshotDTOS);
+        }
+    }
+
+    @GET
+    @Path("/download/{requestId}/{screenshotId}")
+    @Produces("image/png")
+    @Transactional(propagation = Propagation.REQUIRED)
+    public Response download(@PathParam("requestId") Long requestId, @PathParam("screenshotId") Long screenshotId) {
+
+        Screenshot foundScreenshot = screenshotService.getScreenshotByScreenshotIdAndRequestId(screenshotId, requestId);
+        if (foundScreenshot == null)
+            throw new NotFoundException();
+        else {
+            String filePath = foundScreenshot.getFilePath();
+            File file = new File(filePath);
+            return Response.ok(file).build();
         }
     }
 }
