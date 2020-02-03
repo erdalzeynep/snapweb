@@ -1,19 +1,17 @@
-package com.detectify.screenshot.DTO;
-
-import com.detectify.screenshot.model.ScreenshotRequest;
+package com.detectify.screenshot.dto;
 
 import java.util.Map;
 
-public class CaptureScreenshotDTO {
+public class ScreenshotRequestDTO {
 
     private Long requestId;
     private Map<String, ScreenshotDTO> results;
 
-    public CaptureScreenshotDTO() {
+    public ScreenshotRequestDTO() {
     }
 
-    public CaptureScreenshotDTO(ScreenshotRequest req, Map<String, ScreenshotDTO> results) {
-        this.requestId = req.getId();
+    public ScreenshotRequestDTO(Long requestId, Map<String, ScreenshotDTO> results) {
+        this.requestId = requestId;
         this.results = results;
     }
 

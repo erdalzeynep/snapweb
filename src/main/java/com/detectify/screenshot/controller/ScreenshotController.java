@@ -1,7 +1,7 @@
 package com.detectify.screenshot.controller;
 
-import com.detectify.screenshot.DTO.CaptureScreenshotDTO;
-import com.detectify.screenshot.DTO.ScreenshotDTO;
+import com.detectify.screenshot.dto.ScreenshotRequestDTO;
+import com.detectify.screenshot.dto.ScreenshotDTO;
 import com.detectify.screenshot.exception.EmptyUrlListException;
 import com.detectify.screenshot.exception.NotFoundException;
 import com.detectify.screenshot.model.Screenshot;
@@ -40,7 +40,7 @@ public class ScreenshotController {
     @Path("/captureScreenshots")
     @Produces(MediaType.APPLICATION_JSON)
     @Transactional(propagation = Propagation.REQUIRED)
-    public CaptureScreenshotDTO captureScreenshots(@RequestBody List<String> urlList) throws IOException {
+    public ScreenshotRequestDTO captureScreenshots(@RequestBody List<String> urlList) throws IOException {
 
         Map<String, ScreenshotDTO> screenshotDTOS = new HashMap<>();
 
@@ -57,7 +57,7 @@ public class ScreenshotController {
             for (Screenshot screenshot : screenshots) {
                 screenshotDTOS.put(screenshot.getPageUrl(), new ScreenshotDTO(screenshot));
             }
-            return new CaptureScreenshotDTO(request, screenshotDTOS);
+            return new ScreenshotRequestDTO(request.getId(), screenshotDTOS);
         }
     }
 
@@ -65,7 +65,8 @@ public class ScreenshotController {
     @Path("/download/{requestId}/{screenshotId}")
     @Produces("image/png")
     @Transactional(propagation = Propagation.REQUIRED)
-    public Response download(@PathParam("requestId") Long requestId, @PathParam("screenshotId") Long screenshotId) {
+    public Response download(@PathParam("requestId") Long requestId,
+                             @PathParam("screenshotId") Long screenshotId) {
 
         Screenshot foundScreenshot = screenshotService.getScreenshotByScreenshotIdAndRequestId(screenshotId, requestId);
         if (foundScreenshot == null)
@@ -75,5 +76,21 @@ public class ScreenshotController {
             File file = new File(filePath);
             return Response.ok(file).build();
         }
+    }
+
+    @GET
+    @Path("/fetchRequestDetail/{requestId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Transactional(propagation = Propagation.REQUIRED)
+    public ScreenshotRequestDTO fetchRequestDetail(@PathParam("requestId") Long requestID) {
+        Map<String, ScreenshotDTO> screenshotDTOS = new HashMap<>();
+        List<Screenshot> screenshots = screenshotService.getScreenshotByScreenshotId(requestID);
+        if (screenshots.size() != 0) {
+            for (Screenshot screenshot : screenshots) {
+                screenshotDTOS.put(screenshot.getPageUrl(), new ScreenshotDTO(screenshot));
+            }
+            return new ScreenshotRequestDTO(requestID, screenshotDTOS);
+        } else
+            throw new NotFoundException();
     }
 }

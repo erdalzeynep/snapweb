@@ -1,7 +1,5 @@
 package com.detectify.screenshot.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -17,7 +15,6 @@ public class Screenshot extends AbstractEntity {
 
     @ManyToOne
     @JoinColumn(name = "screenshotRequest_id")
-    @JsonIgnoreProperties("screenshotList")
     private ScreenshotRequest screenshotRequest;
 
     public Screenshot() {

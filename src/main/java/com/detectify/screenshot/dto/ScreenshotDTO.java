@@ -1,4 +1,4 @@
-package com.detectify.screenshot.DTO;
+package com.detectify.screenshot.dto;
 
 import com.detectify.screenshot.model.Screenshot;
 

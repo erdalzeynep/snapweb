@@ -19,7 +19,6 @@ public class Application {
         SpringApplication.run(Application.class, args);
     }
 
-
     @PostConstruct
     public void onStart() {
         File destFile = new File(screenshotOutputPath);

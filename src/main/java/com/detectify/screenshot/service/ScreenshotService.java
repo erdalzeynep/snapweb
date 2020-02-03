@@ -54,7 +54,6 @@ public class ScreenshotService {
         if (null == webDriver || null == webDriver.getSessionId()) {
             webDriver = createFreshWebDriver();
         }
-
         webDriver.get(url);
 
         File srcFile = webDriver.getScreenshotAs(OutputType.FILE);
@@ -74,6 +73,10 @@ public class ScreenshotService {
 
     public Screenshot getScreenshotByScreenshotIdAndRequestId(Long screenshotId, Long givenRequestId) {
         return screenshotRepository.findByIdAndScreenshotRequestId(screenshotId, givenRequestId);
+    }
+
+    public List<Screenshot> getScreenshotByScreenshotId(Long screenshotRequestId) {
+        return screenshotRepository.findByScreenshotRequestId(screenshotRequestId);
     }
 
     @PostConstruct

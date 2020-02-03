@@ -1,5 +1,4 @@
-import com.detectify.screenshot.DTO.CaptureScreenshotDTO;
-import org.junit.Ignore;
+import com.detectify.screenshot.dto.ScreenshotRequestDTO;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -18,7 +17,7 @@ import static org.junit.Assert.*;
 public class ScreenshotControllerTest extends TestBase {
 
     @Test
-    public void shouldSaveTheGeneratedImagesLocallyAndReturnTracingUrls() {
+    public void shouldSaveTheGeneratedImagesLocallyAndReturnDownloadUrls() {
 
         List<String> urlList = new ArrayList<>();
         String webPage1 = "https://www.google.com";
@@ -28,7 +27,7 @@ public class ScreenshotControllerTest extends TestBase {
 
         Builder screenshotController = getBuilder("/captureScreenshots");
 
-        CaptureScreenshotDTO response = screenshotController.post(Entity.json(urlList), new GenericType<CaptureScreenshotDTO>() {
+        ScreenshotRequestDTO response = screenshotController.post(Entity.json(urlList), new GenericType<ScreenshotRequestDTO>() {
         });
 
         long persistedScreenshotCount = screenshotRepository.count();
@@ -59,13 +58,13 @@ public class ScreenshotControllerTest extends TestBase {
         String webPage1 = "https://www.google.com";
         urlList1.add(webPage1);
         Builder screenshotController = getBuilder("/captureScreenshots");
-        CaptureScreenshotDTO response1 = screenshotController.post(Entity.json(urlList1), new GenericType<CaptureScreenshotDTO>() {
+        ScreenshotRequestDTO response1 = screenshotController.post(Entity.json(urlList1), new GenericType<ScreenshotRequestDTO>() {
         });
 
         List<String> urlList2 = new ArrayList<>();
         String webPage2 = "https://www.facebook.com";
         urlList2.add(webPage2);
-        CaptureScreenshotDTO response2 = screenshotController.post(Entity.json(urlList2), new GenericType<CaptureScreenshotDTO>() {
+        ScreenshotRequestDTO response2 = screenshotController.post(Entity.json(urlList2), new GenericType<ScreenshotRequestDTO>() {
         });
 
         assertEquals(1, response2.getResults().size());
@@ -77,7 +76,7 @@ public class ScreenshotControllerTest extends TestBase {
         String webPage = "https://www.google.com";
         urlList.add(webPage);
         Builder screenshotController = getBuilder("/captureScreenshots");
-        CaptureScreenshotDTO responseOfCaptureRequest = screenshotController.post(Entity.json(urlList), new GenericType<CaptureScreenshotDTO>() {
+        ScreenshotRequestDTO responseOfCaptureRequest = screenshotController.post(Entity.json(urlList), new GenericType<ScreenshotRequestDTO>() {
         });
 
         Long requestId = responseOfCaptureRequest.getRequestId();
@@ -96,7 +95,7 @@ public class ScreenshotControllerTest extends TestBase {
         String webPage = "https://www.google.com";
         urlList.add(webPage);
         Builder screenshotController = getBuilder("/captureScreenshots");
-        CaptureScreenshotDTO responseOfCaptureRequest = screenshotController.post(Entity.json(urlList), new GenericType<CaptureScreenshotDTO>() {
+        ScreenshotRequestDTO responseOfCaptureRequest = screenshotController.post(Entity.json(urlList), new GenericType<ScreenshotRequestDTO>() {
         });
 
         Long requestId = responseOfCaptureRequest.getRequestId();
@@ -114,7 +113,49 @@ public class ScreenshotControllerTest extends TestBase {
         assertEquals(404, response3.getStatus());
     }
 
-    private String createDownloadUrl(String webPage, CaptureScreenshotDTO response) {
+    @Test
+    public void shouldFetchRequestDetailsByRequestId() {
+
+        List<String> urlList = new ArrayList<>();
+        String webPage = "https://www.google.com";
+        urlList.add(webPage);
+        Builder screenshotController = getBuilder("/captureScreenshots");
+        ScreenshotRequestDTO response = screenshotController.post(Entity.json(urlList), new GenericType<ScreenshotRequestDTO>() {
+        });
+
+        Long requestId = response.getRequestId();
+        ScreenshotRequestDTO fetchResult = getBuilder("/fetchRequestDetail/{requestId}", requestId).get(new GenericType<ScreenshotRequestDTO>() {
+        });
+
+        assertEquals(1, fetchResult.getResults().size());
+        assertTrue(fetchResult.getResults().containsKey(webPage));
+
+        String expectedDownloadUrl = response.getResults().get(webPage).getDownloadUrl();
+        Long expectedScreenshotId = response.getResults().get(webPage).getScreenshotId();
+        String actualDownloadUrl = fetchResult.getResults().get(webPage).getDownloadUrl();
+        Long actualScreenshotId = fetchResult.getResults().get(webPage).getScreenshotId();
+
+        assertEquals(expectedDownloadUrl, actualDownloadUrl);
+        assertEquals(expectedScreenshotId, actualScreenshotId);
+
+    }
+
+    @Test
+    public void shouldGiveNotFoundExceptionWhenFetchingWithInvalidRequestId() {
+        Long invalidRequestId = -999L;
+
+        List<String> urlList = new ArrayList<>();
+        String webPage = "https://www.google.com";
+        urlList.add(webPage);
+        Builder screenshotController = getBuilder("/captureScreenshots");
+        screenshotController.post(Entity.json(urlList), new GenericType<ScreenshotRequestDTO>() {
+        });
+
+        Response response = getBuilder("/fetchRequestDetail/{requestId}", invalidRequestId).get();
+        assertEquals(404, response.getStatus());
+    }
+
+    private String createDownloadUrl(String webPage, ScreenshotRequestDTO response) {
         return "http://localhost:9443/api/1.0/download/" + response.getRequestId() + "/" + response.getResults().get(webPage).getScreenshotId();
     }
 }

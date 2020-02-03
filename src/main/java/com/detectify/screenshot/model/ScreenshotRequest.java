@@ -1,6 +1,5 @@
 package com.detectify.screenshot.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -17,7 +16,6 @@ public class ScreenshotRequest extends AbstractEntity {
     private Date requestDate;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "screenshotRequest", cascade = CascadeType.ALL)
-    @JsonIgnoreProperties("screenshotRequest")
     private List<Screenshot> screenshotList = new ArrayList<>();
 
     public ScreenshotRequest() {
@@ -31,4 +29,3 @@ public class ScreenshotRequest extends AbstractEntity {
         this.screenshotList = screenshotList;
     }
 }
-

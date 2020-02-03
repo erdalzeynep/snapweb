@@ -11,7 +11,11 @@ public class ScreenshotRequestService {
     @Autowired
     private ScreenshotRequestRepository requestRepository;
 
-    public ScreenshotRequest add(ScreenshotRequest request){
+    public ScreenshotRequest add(ScreenshotRequest request) {
         return requestRepository.save(request);
+    }
+
+    public ScreenshotRequest getScreenshotRequestById(Long requestId) {
+        return requestRepository.getOne(requestId);
     }
 }
