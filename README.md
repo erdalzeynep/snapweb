@@ -1,7 +1,7 @@
 # Snapweb
 
-This is a project that provides RESTful services to capture the screenshots of given website URLs and store them
-to download them later at any point in the future.
+This is a project that provides RESTful services to capture the screenshots of given website URLs by using PhantomJS
+Selenium web driver and store them to download them later at any point in the future.
 
 ## Prerequisites
 
@@ -54,6 +54,7 @@ The images that is downloaded will show up with a name like `request_<request-id
 ```bash
 ./gradlew test
 ```
+**Note:** Make sure the app is not already running before running the tests.
 
 ## How to Scale
 
@@ -72,6 +73,8 @@ handle more requests.
 * [Spring Data JPA](https://spring.io/projects/spring-data-jpa)
 
 * [JUnit4 for Unit-tests](https://junit.org/junit4/)
+
+* [PhantomJS - A Selenium Web Driver](https://github.com/detro/ghostdriver)
 
 * [Gradle](https://gradle.org/)
 
