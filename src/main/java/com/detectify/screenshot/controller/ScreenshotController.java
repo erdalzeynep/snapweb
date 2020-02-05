@@ -1,7 +1,7 @@
 package com.detectify.screenshot.controller;
 
-import com.detectify.screenshot.dto.ScreenshotRequestDTO;
 import com.detectify.screenshot.dto.ScreenshotDTO;
+import com.detectify.screenshot.dto.ScreenshotRequestDTO;
 import com.detectify.screenshot.exception.EmptyUrlListException;
 import com.detectify.screenshot.exception.NotFoundException;
 import com.detectify.screenshot.model.Screenshot;
